@@ -1,0 +1,181 @@
+export enum UserRole {
+  ADMIN = 'ADMIN',
+  CONSULTANT = 'CONSULTANT',
+  ETUDIANT = 'ETUDIANT',
+}
+
+export enum TimeSlot {
+  SLOT_0900 = 'SLOT_0900',
+  SLOT_0930 = 'SLOT_0930',
+  SLOT_1000 = 'SLOT_1000',
+  SLOT_1030 = 'SLOT_1030',
+  SLOT_1100 = 'SLOT_1100',
+  SLOT_1130 = 'SLOT_1130',
+  SLOT_1400 = 'SLOT_1400',
+  SLOT_1430 = 'SLOT_1430',
+  SLOT_1500 = 'SLOT_1500',
+  SLOT_1530 = 'SLOT_1530',
+  SLOT_1600 = 'SLOT_1600',
+  SLOT_1630 = 'SLOT_1630',
+}
+
+export const TIME_SLOT_LABELS: Record<TimeSlot, string> = {
+  [TimeSlot.SLOT_0900]: '09h00',
+  [TimeSlot.SLOT_0930]: '09h30',
+  [TimeSlot.SLOT_1000]: '10h00',
+  [TimeSlot.SLOT_1030]: '10h30',
+  [TimeSlot.SLOT_1100]: '11h00',
+  [TimeSlot.SLOT_1130]: '11h30',
+  [TimeSlot.SLOT_1400]: '14h00',
+  [TimeSlot.SLOT_1430]: '14h30',
+  [TimeSlot.SLOT_1500]: '15h00',
+  [TimeSlot.SLOT_1530]: '15h30',
+  [TimeSlot.SLOT_1600]: '16h00',
+  [TimeSlot.SLOT_1630]: '16h30',
+};
+
+export enum RendezvousStatus {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
+}
+
+export enum Opinion {
+  FAVORABLE = 'FAVORABLE',
+  UNFAVORABLE = 'UNFAVORABLE',
+  PENDING = 'PENDING',
+}
+
+export enum CancelledBy {
+  ADMIN = 'ADMIN',
+  ETUDIANT = 'ETUDIANT',
+  CONSULTANT = 'CONSULTANT',
+  SYSTEM = 'SYSTEM',
+}
+
+export enum MeetingStatus {
+  PENDING = 'PENDING',
+  CONFIRMED = 'CONFIRMED',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
+}
+
+export enum MeetingCreator {
+  ETUDIANT = 'ETUDIANT',
+  CONSULTANT = 'CONSULTANT',
+}
+
+export enum ProcedureStatus {
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  REJECTED = 'REJECTED',
+  CANCELLED = 'CANCELLED',
+}
+
+export enum StepStatus {
+  PENDING = 'PENDING',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  REJECTED = 'REJECTED',
+}
+
+export enum ContactStatus {
+  NEW = 'NEW',
+  READ = 'READ',
+  REPLIED = 'REPLIED',
+  ARCHIVED = 'ARCHIVED',
+}
+
+export enum AbsenceType {
+  // Congés
+  CONGES = 'CONGES',
+  CONGE_MATERNITE = 'CONGE_MATERNITE',
+  CONGE_PATERNITE = 'CONGE_PATERNITE',
+  CONGE_EXCEPTIONNEL = 'CONGE_EXCEPTIONNEL',
+  
+  // Santé
+  MALADIE = 'MALADIE',
+  REPOS = 'REPOS',
+  
+  // Professionnel
+  FORMATION = 'FORMATION',
+  MISSION = 'MISSION',
+  DEPLACEMENT = 'DEPLACEMENT',
+  
+  // Autorisations
+  ABSENCE_AUTORISEE = 'ABSENCE_AUTORISEE',
+  ABSENCE_NON_AUTORISEE = 'ABSENCE_NON_AUTORISEE',
+  
+  // Autres
+  EVENEMENT_FAMILIAL = 'EVENEMENT_FAMILIAL',
+  GREVE = 'GREVE',
+  AUTRE = 'AUTRE',
+}
+
+export const ABSENCE_TYPE_LABELS: Record<AbsenceType, string> = {
+  [AbsenceType.CONGES]: 'Congés',
+  [AbsenceType.CONGE_MATERNITE]: 'Congé maternité',
+  [AbsenceType.CONGE_PATERNITE]: 'Congé paternité',
+  [AbsenceType.CONGE_EXCEPTIONNEL]: 'Congé exceptionnel',
+  [AbsenceType.MALADIE]: 'Maladie',
+  [AbsenceType.REPOS]: 'Repos',
+  [AbsenceType.FORMATION]: 'Formation',
+  [AbsenceType.MISSION]: 'Mission',
+  [AbsenceType.DEPLACEMENT]: 'Déplacement',
+  [AbsenceType.ABSENCE_AUTORISEE]: 'Absence autorisée',
+  [AbsenceType.ABSENCE_NON_AUTORISEE]: 'Absence non autorisée',
+  [AbsenceType.EVENEMENT_FAMILIAL]: 'Événement familial',
+  [AbsenceType.GREVE]: 'Grève',
+  [AbsenceType.AUTRE]: 'Autre',
+};
+
+/**
+ * Couleurs associées aux types d'absence (pour interface utilisateur)
+ */
+export const ABSENCE_TYPE_COLORS: Record<AbsenceType, string> = {
+  [AbsenceType.CONGES]: '#4CAF50',
+  [AbsenceType.CONGE_MATERNITE]: '#E91E63',
+  [AbsenceType.CONGE_PATERNITE]: '#2196F3',
+  [AbsenceType.CONGE_EXCEPTIONNEL]: '#9C27B0',
+  [AbsenceType.MALADIE]: '#F44336',
+  [AbsenceType.REPOS]: '#FF9800',
+  [AbsenceType.FORMATION]: '#00BCD4',
+  [AbsenceType.MISSION]: '#795548',
+  [AbsenceType.DEPLACEMENT]: '#607D8B',
+  [AbsenceType.ABSENCE_AUTORISEE]: '#8BC34A',
+  [AbsenceType.ABSENCE_NON_AUTORISEE]: '#FF5722',
+  [AbsenceType.EVENEMENT_FAMILIAL]: '#FF4081',
+  [AbsenceType.GREVE]: '#D32F2F',
+  [AbsenceType.AUTRE]: '#9E9E9E',
+};
+
+export enum NotificationType {
+  RENDEZVOUS_CREATED = 'RENDEZVOUS_CREATED',
+  RENDEZVOUS_RESCHEDULED = 'RENDEZVOUS_RESCHEDULED',
+  RENDEZVOUS_CANCELLED = 'RENDEZVOUS_CANCELLED',
+  FOLLOWUP_CREATED = 'FOLLOWUP_CREATED',
+  FOLLOWUP_RESCHEDULED = 'FOLLOWUP_RESCHEDULED',
+  FOLLOWUP_CANCELLED = 'FOLLOWUP_CANCELLED',
+  FOLLOWUP_COMPLETED = 'FOLLOWUP_COMPLETED',
+  PROCEDURE_CREATED = 'PROCEDURE_CREATED',
+  PROCEDURE_STEP_COMPLETED = 'PROCEDURE_STEP_COMPLETED',
+  PROCEDURE_STEP_REJECTED = 'PROCEDURE_STEP_REJECTED',
+  PROCEDURE_COMPLETED = 'PROCEDURE_COMPLETED',
+  PROCEDURE_REJECTED = 'PROCEDURE_REJECTED',
+  PROCEDURE_CANCELLED = 'PROCEDURE_CANCELLED',
+  DESTINATION_CREATED = 'DESTINATION_CREATED',
+  DESTINATION_UPDATED = 'DESTINATION_UPDATED',
+  DESTINATION_SOFT_DELETED = 'DESTINATION_SOFT_DELETED',
+  DESTINATION_RESTORED = 'DESTINATION_RESTORED',
+  DESTINATION_HARD_DELETED = 'DESTINATION_HARD_DELETED',
+  CONSULTANT_ABSENCE_DECLARED = 'CONSULTANT_ABSENCE_DECLARED',
+  REVIEW_RECEIVED = 'REVIEW_RECEIVED',
+  REVIEW_RESPONSE = 'REVIEW_RESPONSE',
+  CONTACT_NEW = 'CONTACT_NEW',
+  CONTACT_REPLIED = 'CONTACT_REPLIED',
+  ACCOUNT_LOCKED = 'ACCOUNT_LOCKED',
+  ACCOUNT_PROMOTED = 'ACCOUNT_PROMOTED',
+  SESSION_REVOKED = 'SESSION_REVOKED',
+  SYSTEM = 'SYSTEM',
+}

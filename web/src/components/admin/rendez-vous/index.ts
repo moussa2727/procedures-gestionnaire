@@ -1,0 +1,1 @@
+export { AdminRendezVousTable } from './AdminRendezVousTable';

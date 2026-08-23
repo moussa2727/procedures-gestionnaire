@@ -1,0 +1,21 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "testRegex": ".e2e-spec.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "transformIgnorePatterns": [
+    "node_modules/(?!(jose|@jose|postcss|nanoid|zlib|cookie|set-cookie-parser|keyv|@prisma|socket.io-client)/)"
+  ],
+  "moduleNameMapper": {
+    "^@/(.*)$": "<rootDir>/../src/$1",
+    "^uuid$": "<rootDir>/setup/uuid-mock.ts"
+  },
+  "setupFiles": ["<rootDir>/setup/env.ts"],
+  "testTimeout": 120000,
+  "maxWorkers": 1,
+  "forceExit": true,
+  "detectOpenHandles": true
+}

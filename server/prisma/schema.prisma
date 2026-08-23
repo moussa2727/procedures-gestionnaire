@@ -1,0 +1,765 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+//
+// ==================== AUTHENTIFICATION ====================
+//
+enum AuthProvider {
+  LOCAL
+  GOOGLE
+}
+
+enum UserRole {
+  ADMIN  @map("Administrateur")
+  CONSULTANT @map("Consultant")
+  ETUDIANT   @map("Etudiant")
+}
+
+
+enum TokenStatus {
+  PENDING
+  USED
+  EXPIRED
+}
+
+
+model AuditLog {
+  id String @id @default(cuid())
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  success Boolean
+
+  ipAddress String?
+  userAgent String?
+
+  action   AuditAction
+  entity   String
+  entityId String?
+
+  metadata Json?
+
+  createdAt DateTime @default(now())
+}
+
+
+model User {
+  id       String   @id @default(cuid())
+  email    String   @unique @db.VarChar(100)
+  password String?  @db.VarChar(255)
+  photo    String   @default("")
+  photoPublicId String? @map("photo_public_id")
+
+  role     UserRole @default(ETUDIANT)
+
+  authProviders UserAuthProvider[]
+
+  firstName String @db.VarChar(50)
+  lastName  String @db.VarChar(50)
+  phone     String? @db.VarChar(20)
+
+  isActive Boolean @default(true)
+
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+  lastLoginIp         String?   @db.VarChar(45)
+
+  isOnline Boolean   @default(false)
+  lastSeen DateTime?
+
+  logoutUntil       DateTime?
+  logoutReason      String?
+  logoutTransaction String?
+
+  isDeleted Boolean   @default(false)
+  deletedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  refreshTokens RefreshToken[]
+  revokedTokens RevokedToken[]
+  resetTokens   ResetToken[]
+  consultantBookings ConsultantBooking[]
+  consultantDestinations ConsultantDestination[]
+  studentProcedures      Procedure[]          @relation("StudentProcedures")
+  consultantProcedures   Procedure[]          @relation("ConsultantProcedures")
+  studentRendezVous      RendezVous[]         @relation("StudentRendezVous")
+  consultantRendezVous   RendezVous[]         @relation("ConsultantRendezVous")
+  studentMeetings        FollowUpMeeting[]    @relation("StudentMeetings")
+  consultantMeetings     FollowUpMeeting[]    @relation("ConsultantMeetings")
+  sessions               Session[]
+  contacts      Contact[]
+  auditLogs     AuditLog[]
+  loginHistory  LoginHistory[]
+  procedureComments ProcedureComment[]
+  consultantUnavailabilities ConsultantUnavailability[]
+
+
+  receivedReviews ConsultantReview[] @relation("ConsultantReviews")
+  givenReviews    ConsultantReview[] @relation("StudentReviews")
+  reviewResponses ConsultantReviewResponse[]
+
+  notifications Notification[]
+
+  @@index([email])
+  @@index([role, isActive])
+  @@index([isOnline])
+  @@index([isDeleted])
+}
+
+model UserAuthProvider {
+  id String @id @default(cuid())
+
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  provider AuthProvider
+
+  providerId String
+
+  createdAt DateTime @default(now())
+
+  @@unique([provider, providerId])
+  @@unique([userId, provider])
+  @@index([userId])
+}
+
+
+model RefreshToken {
+  id     String @id @default(cuid())
+  userId String
+
+  sessionId String?
+
+  session Session? @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id])
+
+  token     String   @unique @db.Text
+  expiresAt DateTime
+  isActive  Boolean  @default(true)
+  rememberMe Boolean @default(false)
+
+  rotationCount Int @default(0)
+
+  lastActivity DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sessionId])
+  @@index([userId])
+}
+
+model RevokedToken {
+  id     String @id @default(cuid())
+  token  String @unique @db.Text
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  reason String?
+
+  createdAt DateTime @default(now())
+}
+
+model ResetToken {
+  id     String @id @default(cuid())
+  token  String @unique @db.Text
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  expiresAt DateTime
+  used      Boolean     @default(false)
+  status    TokenStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+}
+
+model Session {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  token     String   @unique @db.Text
+  expiresAt DateTime
+
+  isActive Boolean @default(true)
+
+  deviceInfo       String?
+  deactivatedAt    DateTime?
+  revocationReason RevocationReason?
+
+  ipAddress String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+
+  refreshTokens RefreshToken[]
+  loginHistory  LoginHistory[]
+
+  @@index([userId, isActive])
+}
+
+
+model LoginHistory {
+  id String @id @default(cuid())
+
+  userId String
+
+  sessionId String?
+
+  session Session? @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id])
+
+  provider AuthProvider
+  ipAddress String?
+  userAgent String?
+
+  success Boolean @default(true)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([provider])
+  @@index([sessionId])
+  @@index([createdAt])
+}
+
+enum RevocationReason {
+  SESSION_EXPIRED
+  TOKEN_ROTATED
+  MANUAL_LOGOUT
+  TOKEN_REUSE_DETECTED
+  PASSWORD_CHANGED
+  ADMIN_REVOKE
+  MANUAL_REVOKE
+  MAX_SESSIONS_REACHED
+  INACTIVITY
+  SESSION_MAX_AGE
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  VIEW
+  LOGIN
+  LOGOUT
+  CANCEL
+  COMPLETE
+  RESPOND
+  EXPORT
+
+  DESTINATION_CREATE
+  DESTINATION_UPDATE
+  DESTINATION_SOFT_DELETE
+  DESTINATION_RESTORE
+  DESTINATION_HARD_DELETE
+  DESTINATION_IMAGE_CLEANUP
+
+  CONSULTANT_ASSIGNED
+  CONSULTANT_UNASSIGNED
+  CONSULTANT_ASSIGNMENT_REJECTED
+
+  CONSULTANT_ABSENCE_CREATED
+  CONSULTANT_ABSENCE_DELETED
+
+  USER_CREATE
+  USER_UPDATE
+  USER_SOFT_DELETE
+  USER_RESTORE
+  USER_STATUS_TOGGLE
+  USER_PASSWORD_RESET_BY_ADMIN
+  USER_PROMOTED_TO_CONSULTANT
+  USER_PHOTO_UPDATED
+  USER_SESSION_REVOKED
+  REVIEW_CREATED
+  REVIEW_RESPONSE_CREATED
+  REVIEW_COMMENT_MODERATED
+  LOGOUT_ALL_USERS
+
+
+
+  @@map("audit_action")
+}
+
+
+//
+//============== PROCEDURES ===============
+//
+
+enum StepStatus {
+  PENDING      @map("En_attente")
+  IN_PROGRESS  @map("En_cours")
+  COMPLETED    @map("Terminee")
+  REJECTED     @map("Rejetee")
+}
+
+
+enum ProcedureStatus {
+  IN_PROGRESS @map("En_cours")
+  COMPLETED   @map("Terminee")
+  REJECTED    @map("Rejetee")
+  CANCELLED   @map("Annulée")
+}
+
+model ProcedureComment {
+  id          String   @id @default(cuid())
+  procedureId String
+  authorId    String
+  content     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  procedure Procedure @relation(fields: [procedureId], references: [id], onDelete: Cascade)
+  author    User      @relation(fields: [authorId], references: [id])
+
+  @@index([procedureId])
+}
+
+model Procedure {
+  id            String @id @default(cuid())
+
+  numeroDossier String @unique @default(cuid())
+
+  rendezVousId  String @unique
+  rendezVous    RendezVous @relation(fields: [rendezVousId], references: [id])
+
+  studentId     String
+  consultantId  String
+  destinationId String
+
+  status ProcedureStatus @default(IN_PROGRESS)
+
+  cancellationReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student     User        @relation("StudentProcedures", fields: [studentId], references: [id])
+  consultant  User        @relation("ConsultantProcedures", fields: [consultantId], references: [id])
+  destination Destination @relation(fields: [destinationId], references: [id])
+
+  steps     Step[]
+  meetings  FollowUpMeeting[]
+  comments  ProcedureComment[]
+
+  @@index([studentId])
+  @@index([consultantId])
+  @@index([destinationId])
+  @@index([numeroDossier])
+}
+
+model Step {
+  id          String     @id @default(cuid())
+  procedureId String
+  stepName String
+  orderIndex  Int
+  status      StepStatus @default(PENDING)
+
+  rejectionReason String?
+  cascadeCancelledFromStepId String?
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  procedure Procedure @relation(fields: [procedureId], references: [id], onDelete: Cascade)
+
+  @@index([procedureId])
+}
+
+
+//
+// ============ Rendez-Vous ===========
+//
+
+enum RendezvousStatus {
+  PENDING   @map("En_attente")
+  CONFIRMED @map("Confirme")
+  COMPLETED @map("Termine")
+  CANCELLED @map("Annulé")
+}
+
+enum Opinion {
+  FAVORABLE   @map("Favorable")
+  UNFAVORABLE @map("Defavorable")
+  PENDING     @map("En_attente")
+}
+
+
+enum TimeSlot {
+  SLOT_0900 @map("09:00")
+  SLOT_0930 @map("09:30")
+  SLOT_1000 @map("10:00")
+  SLOT_1030 @map("10:30")
+  SLOT_1100 @map("11:00")
+  SLOT_1130 @map("11:30")
+  SLOT_1400 @map("14:00")
+  SLOT_1430 @map("14:30")
+  SLOT_1500 @map("15:00")
+  SLOT_1530 @map("15:30")
+  SLOT_1600 @map("16:00")
+  SLOT_1630 @map("16:30")
+}
+
+
+enum CancelledBy {
+  ADMIN  @map("Administrateur")
+  ETUDIANT @map("Etudiant")
+  CONSULTANT @map("Consultant")
+  SYSTEM @map("Systeme")
+}
+
+
+model RendezVous {
+  id String @id @default(cuid())
+
+  studentId String
+  consultantId String
+  destinationId String
+
+  firstName String
+  lastName String
+  email String
+  phone String
+
+  sector String
+  studyLevel String
+
+  date DateTime
+  time TimeSlot
+
+  reminderSentAt DateTime?
+  status RendezvousStatus @default(CONFIRMED)
+  opinion Opinion?
+
+  booking ConsultantBooking?
+  procedure Procedure?
+
+  cancelledAt DateTime?
+  cancelledBy CancelledBy?
+  cancellationReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student User @relation("StudentRendezVous", fields: [studentId], references: [id])
+  consultant User @relation("ConsultantRendezVous", fields: [consultantId], references: [id])
+  destination Destination @relation(fields: [destinationId], references: [id])
+
+  consultantReviews ConsultantReview[]
+
+  @@index([studentId, date, time])
+  @@index([consultantId, date])
+  @@index([email])
+  @@index([date, status])
+}
+
+
+enum MeetingStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+enum MeetingCreator {
+  ETUDIANT
+  CONSULTANT
+}
+
+
+model FollowUpMeeting {
+  id String @id @default(cuid())
+
+  procedureId String
+  procedure Procedure @relation(fields: [procedureId], references: [id])
+
+  consultantId String
+  consultant User @relation("ConsultantMeetings", fields: [consultantId], references: [id])
+
+  studentId String
+  student User @relation("StudentMeetings", fields: [studentId], references: [id])
+
+  booking ConsultantBooking?
+   reminderSentAt  DateTime?      @map("reminder_sent_at")
+
+  date DateTime
+  time TimeSlot
+
+  createdBy MeetingCreator
+  status MeetingStatus @default(CONFIRMED)
+  reason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  consultantReviews ConsultantReview[]
+
+  @@index([consultantId, date])
+}
+
+
+model ConsultantBooking {
+  id String @id @default(cuid())
+
+  consultantId String
+  consultant User @relation(fields: [consultantId], references: [id])
+
+  date DateTime
+  time TimeSlot
+
+  rendezVousId String? @unique
+  followUpMeetingId String? @unique
+
+  rendezVous RendezVous? @relation(fields: [rendezVousId], references: [id])
+  followUpMeeting FollowUpMeeting? @relation(fields: [followUpMeetingId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([consultantId, date, time])
+  @@index([consultantId, date])
+}
+
+
+// ==================== ÉVALUATIONS CONSULTANT ====================
+
+model ConsultantReview {
+  id           String   @id @default(cuid())
+  consultantId String
+  studentId    String
+  rendezVousId String?
+  meetingId    String?
+
+  rating       Int      @default(5)
+  comment      String?  @db.Text
+
+  moderatedAt      DateTime?
+  moderationReason String?
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  consultant   User     @relation("ConsultantReviews", fields: [consultantId], references: [id])
+  student      User     @relation("StudentReviews", fields: [studentId], references: [id])
+  rendezVous   RendezVous? @relation(fields: [rendezVousId], references: [id])
+  followUpMeeting FollowUpMeeting? @relation(fields: [meetingId], references: [id])
+
+  response     ConsultantReviewResponse?
+
+  @@unique([studentId, consultantId])
+  @@index([consultantId])
+  @@index([rating])
+  @@index([createdAt])
+}
+
+model ConsultantReviewResponse {
+  id           String   @id @default(cuid())
+  reviewId     String   @unique
+  consultantId String
+  response     String   @db.Text
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  review       ConsultantReview @relation(fields: [reviewId], references: [id])
+  consultant   User             @relation(fields: [consultantId], references: [id])
+}
+
+
+// ==================== NOTIFICATIONS ====================
+
+enum NotificationType {
+  RENDEZVOUS_CREATED
+  RENDEZVOUS_RESCHEDULED
+  RENDEZVOUS_CANCELLED
+  FOLLOWUP_CREATED
+  FOLLOWUP_RESCHEDULED
+  FOLLOWUP_CANCELLED
+  FOLLOWUP_COMPLETED
+  PROCEDURE_CREATED
+  PROCEDURE_STEP_COMPLETED
+  PROCEDURE_STEP_REJECTED
+  PROCEDURE_COMPLETED
+  PROCEDURE_REJECTED
+  PROCEDURE_CANCELLED
+  DESTINATION_CREATED
+  DESTINATION_UPDATED
+  DESTINATION_SOFT_DELETED
+  DESTINATION_RESTORED
+  DESTINATION_HARD_DELETED
+  CONSULTANT_ABSENCE_DECLARED
+  REVIEW_RECEIVED
+  REVIEW_RESPONSE
+  CONTACT_NEW
+  CONTACT_REPLIED
+  ACCOUNT_LOCKED
+  ACCOUNT_PROMOTED
+  SESSION_REVOKED
+  SYSTEM
+}
+
+model Notification {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  type    NotificationType
+  title   String
+  message String           @db.Text
+  metadata Json?
+
+  entity   String?
+  entityId String?
+
+  isRead Boolean   @default(false)
+  readAt DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead])
+  @@index([userId, createdAt])
+}
+
+
+//
+// ==============  CONTACT ==============
+//
+enum ContactStatus {
+  NEW
+  READ
+  REPLIED
+  ARCHIVED
+}
+
+model Contact {
+  id          String        @id @default(cuid())
+  name        String?
+  email       String
+  message     String        @db.Text
+  status      ContactStatus @default(NEW)
+
+  userId  String?
+  user    User?  @relation(fields: [userId], references: [id])
+
+  ipAddress   String?
+  reply       String?       @db.Text
+  repliedAt   DateTime?
+  reminderSentAt DateTime?
+  repliedById String?
+  archivedAt  DateTime?
+  deletedAt   DateTime?
+
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  emailSent       Boolean   @default(false)
+  adminNotified   Boolean   @default(false)
+  replyEmailSent  Boolean   @default(false)
+
+  @@index([status])
+  @@index([email])
+  @@index([createdAt])
+  @@map("contacts")
+}
+
+
+model ContactArchive {
+  id            String    @id @default(cuid())
+  originalId    String
+  name          String
+  email         String
+  message       String    @db.Text
+  reply         String?   @db.Text
+  createdAt     DateTime
+  repliedAt     DateTime?
+  archivedAt    DateTime  @default(now())
+  deletedReason String    @default("retention-1-year")
+
+  @@index([email])
+  @@index([originalId])
+  @@map("contact_archives")
+}
+
+
+//
+//============ Destinations ==============
+//
+model Destination {
+  id      String @id @default(cuid())
+  country String @unique
+
+  photo         String
+  photoPublicId String @map("photo_public_id")
+  photoMetadata Json?
+
+  description String @db.Text
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  deletedAt DateTime? @map("deleted_at")
+  isDeleted Boolean   @default(false) @map("is_deleted")
+
+  consultants ConsultantDestination[]
+  procedures  Procedure[]
+  rendezVous  RendezVous[]
+
+  @@index([country])
+  @@index([createdAt])
+  @@index([isDeleted])
+
+  @@map("destinations")
+}
+
+model ConsultantDestination {
+  consultantId  String
+  destinationId String
+  assignedAt     DateTime @default(now())
+
+  consultant  User        @relation(fields: [consultantId], references: [id])
+  destination Destination @relation(fields: [destinationId], references: [id])
+
+  @@id([consultantId, destinationId])
+  @@index([consultantId])
+  @@index([destinationId])
+}
+
+
+enum AbsenceType {
+  CONGES
+  MALADIE
+  FORMATION
+  REPOS
+  MISSION
+  DEPLACEMENT
+  CONGE_MATERNITE
+  CONGE_PATERNITE
+  CONGE_EXCEPTIONNEL
+  ABSENCE_AUTORISEE
+  ABSENCE_NON_AUTORISEE
+  EVENEMENT_FAMILIAL
+  GREVE
+  AUTRE
+}
+
+model ConsultantUnavailability {
+  id           String      @id @default(cuid())
+  consultantId String
+  consultant   User        @relation(fields: [consultantId], references: [id], onDelete: Cascade)
+  startDate    DateTime
+  endDate      DateTime
+  type         AbsenceType
+  reason       String?
+  createdBy    String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  @@index([consultantId, startDate, endDate])
+  @@map("consultant_unavailability")
+}

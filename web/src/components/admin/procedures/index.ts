@@ -1,0 +1,1 @@
+export { AdminProcedureTable } from './AdminProcedureTable';

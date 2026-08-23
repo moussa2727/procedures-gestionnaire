@@ -1,0 +1,1 @@
+export { StudentCertificateModal } from './StudentCertificateModal';

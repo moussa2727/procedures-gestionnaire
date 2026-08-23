@@ -1,0 +1,37 @@
+# Logs
+logs/
+*.log
+
+# Build local (Railway rebuild en CI — à garder seulement si Dockerfile build en conteneur)
+dist/
+build/
+
+# Dépendances (Railway installe via bun install)
+node_modules/
+
+# Environnement — jamais commité, jamais uploadé
+.env
+.env.*
+.env.production
+
+# Éditeurs
+.vscode/
+.idea/
+
+# Git
+.git/
+.gitignore
+
+# Tests
+__tests__/
+*.spec.ts
+*.e2e-spec.ts
+coverage/
+
+# Documentation
+README.md
+CONTRIBUTING.md
+
+# Temp
+*.tmp
+*.temp

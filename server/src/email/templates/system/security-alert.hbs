@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alerte de sécurité</title>
+  </head>
+  <body style="margin:0;padding:0;background:#f3f7fb;font-family:Arial,sans-serif;color:#0f172a;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f3f7fb;padding:24px 12px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" max-width="600" cellspacing="0" cellpadding="0" border="0" style="max-width:600px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 8px 24px rgba(15,23,42,0.08);">
+            <tr>
+              <td style="background:linear-gradient(135deg,#2f80ed,#5aa9ff);padding:28px 24px;text-align:center;color:#ffffff;">
+                <h1 style="margin:0;font-size:24px;">Alerte de sécurité</h1>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:28px 24px;background:#ffffff;">
+                <p style="margin:0 0 12px;font-size:16px;">Bonjour {{firstName}},</p>
+                <p style="margin:0 0 12px;font-size:15px;line-height:1.6;color:#334155;">Une activité inhabituelle a été détectée sur votre compte.</p>
+                <p style="margin:0 0 12px;font-size:14px;line-height:1.6;color:#64748b;">Détectée le {{detectedAt}} depuis l’adresse IP {{ipAddress}}.</p>
+              </td>
+            </tr>
+             <tr>
+            <td style="padding:16px 32px; background-color:#f2f6fa; border-top:1px solid #dce5ef;">
+              <p style="font-size:11px; color:#7a9ab5; margin:0; line-height:1.5;">
+                Cet email a ete envoye automatiquement, merci de ne pas y repondre.
+              </p>
+              <p style="font-size:11px; color:#9ab0c8; margin:6px 0 0 0;">
+                &copy; {{year}} Paname Consulting
+              </p>
+            </td>
+          </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

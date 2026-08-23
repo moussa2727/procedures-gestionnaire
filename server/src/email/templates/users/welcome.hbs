@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bienvenue</title>
+  <style>
+    :root { color-scheme: light; }
+    @media (prefers-color-scheme: dark) { body { background: #f3f7fb !important; } }
+    body { margin:0; padding:0; background-color:#f3f7fb; font-family: Arial, sans-serif; color:#0f172a; }
+    .container { max-width:600px; margin:0 auto; padding:24px 12px; }
+    .card { background:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 8px 24px rgba(15,23,42,0.08); }
+    .header { background:linear-gradient(135deg,#2f80ed,#5aa9ff); padding:28px 24px; text-align:center; color:#ffffff; }
+    .header h1 { margin:0; font-size:24px; }
+    .header p { margin:8px 0 0; font-size:14px; opacity:0.95; }
+    .body { padding:28px 24px; background:#ffffff; }
+    .body p { margin:0 0 16px; line-height:1.6; color:#334155; font-size:15px; }
+    .body .greeting { font-size:16px; margin:0 0 12px; }
+    .body .btn-wrapper { margin:12px 0 20px; text-align:center; }
+    .body .btn { display:inline-block; background:#2f80ed; color:#ffffff; font-weight:bold; padding:12px 18px; border-radius:999px; text-decoration:none; }
+    .body .note { font-size:13px; color:#64748b; margin:0; }
+    .footer { padding:16px 32px; background:#f2f6fa; border-top:1px solid #dce5ef; text-align:center; font-size:11px; color:#7a9ab5; line-height:1.5; }
+    .footer .copy { margin:6px 0 0; color:#9ab0c8; }
+    @media (max-width:600px) {
+      .header, .body, .footer { padding-left:16px; padding-right:16px; }
+      .btn { display:block; text-align:center; }
+    }
+  </style>
+</head>
+<body>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f3f7fb; padding:24px 12px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px; background:#ffffff; border-radius:16px; overflow:hidden; box-shadow:0 8px 24px rgba(15,23,42,0.08);">
+          <tr>
+            <td style="background:linear-gradient(135deg,#2f80ed,#5aa9ff); padding:28px 24px; text-align:center; color:#ffffff;">
+              <span style="font-size:24px; font-weight:bold;">Bienvenue sur Procedures Gestionnaire</span>
+              <p style="margin:8px 0 0; font-size:14px; opacity:0.95;">Votre espace de gestion est maintenant prêt.</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:28px 24px; background:#ffffff;">
+              <p style="font-size:16px; margin:0 0 12px;">Bonjour{{#if firstName}} {{firstName}}{{/if}},</p>
+              <p style="font-size:15px; line-height:1.6; color:#334155; margin:0 0 16px;">Merci pour votre inscription. Vous pouvez dès maintenant accéder à votre tableau de bord et gérer vos démarches en toute simplicité.</p>
+
+              {{#if loginUrl}}
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:12px 0 20px; text-align:center;">
+                  <tr>
+                    <td align="center">
+                      <a href="{{loginUrl}}" style="background:#2f80ed; color:#ffffff; font-weight:bold; padding:12px 18px; border-radius:999px; text-decoration:none; display:inline-block;">Se connecter</a>
+                    </td>
+                  </tr>
+                </table>
+              {{/if}}
+
+              <p style="font-size:13px; line-height:1.6; color:#64748b; margin:0;">Si vous avez besoin d’aide, notre équipe est à votre disposition.</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:16px 32px; background:#f2f6fa; border-top:1px solid #dce5ef; text-align:center; font-size:11px; color:#7a9ab5; line-height:1.5;">
+              <p style="margin:0;">Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
+              <p style="margin:6px 0 0; color:#9ab0c8;">&copy; {{year}} Paname Consulting</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
