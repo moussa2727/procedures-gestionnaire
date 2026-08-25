@@ -49,3 +49,6 @@ logs/
 .turbo/
 .gen/
 prisma/migrations/
+
+# Added by ggshield
+.cache_ggshield

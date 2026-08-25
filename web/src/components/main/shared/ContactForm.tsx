@@ -19,7 +19,7 @@ import {
 import { createContactSchema, type CreateContactFormValues } from '@/src/schemas/contact.schema';
 import { useCreateContact } from '@/src/hooks/use-contacts';
 
-function ContactInfoItem({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+function ContactInfoItem({ icon: Icon, label, value }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string }) {
   return (
     <div className="flex items-start gap-3 rounded-lg border border-sky-100 bg-white p-3 sm:p-4 transition-colors hover:border-sky-200">
       <div className="flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg bg-sky-100 text-sky-600">
@@ -106,7 +106,7 @@ function ContactFormSection() {
             id="name"
             type="text"
             placeholder="Votre nom"
-            className={`w-full rounded-lg border bg-white px-3 py-2.5 pl-10 text-sm text-slate-800 placeholder:text-slate-400 transition-colors focus:outline-none focus:ring-0 focus:border-sky-600 disabled:opacity-50 disabled:cursor-not-allowed ${
+            className={`w-full rounded-lg border bg-white px-3 py-2.5 pl-10 text-sm text-slate-800 placeholder:text-slate-400 transition-colors focus:outline-none focus:ring-0 focus:border-sky-600 hover:border-sky-300 disabled:opacity-50 disabled:cursor-not-allowed ${
               errors.name ? 'border-rose-300' : 'border-sky-200'
             }`}
             disabled={isPending}
@@ -134,7 +134,7 @@ function ContactFormSection() {
             id="email"
             type="email"
             placeholder="vous@exemple.fr"
-            className={`w-full rounded-lg border bg-white px-3 py-2.5 pl-10 text-sm text-slate-800 placeholder:text-slate-400 transition-colors focus:outline-none focus:ring-0 focus:border-sky-600 disabled:opacity-50 disabled:cursor-not-allowed ${
+            className={`w-full rounded-lg border bg-white px-3 py-2.5 pl-10 text-sm text-slate-800 placeholder:text-slate-400 transition-colors focus:outline-none focus:ring-0 focus:border-sky-600 hover:border-sky-300 disabled:opacity-50 disabled:cursor-not-allowed ${
               errors.email ? 'border-rose-300' : 'border-sky-200'
             }`}
             disabled={isPending}
@@ -162,7 +162,7 @@ function ContactFormSection() {
             id="message"
             rows={4}
             placeholder="Decrivez votre demande..."
-            className={`w-full rounded-lg border bg-white px-3 py-2.5 pl-10 text-sm text-slate-800 placeholder:text-slate-400 transition-colors focus:outline-none focus:ring-0 focus:border-sky-600 disabled:opacity-50 disabled:cursor-not-allowed resize-y min-h-24 ${
+            className={`w-full rounded-lg border bg-white px-3 py-2.5 pl-10 text-sm text-slate-800 placeholder:text-slate-400 transition-colors focus:outline-none focus:ring-0 focus:border-sky-600 hover:border-sky-300 disabled:opacity-50 disabled:cursor-not-allowed resize-y min-h-24 ${
               errors.message ? 'border-rose-300' : 'border-sky-200'
             }`}
             disabled={isPending}
@@ -199,7 +199,7 @@ function ContactFormSection() {
         <div className="flex items-start gap-3 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3">
           <AlertCircle className="h-4 w-4 shrink-0 text-rose-600" strokeWidth={1.8} />
           <p className="text-sm text-rose-700">
-            Une erreur est survenue lors de l'envoi. Veuillez reessayer.
+            Une erreur est survenue lors de l&apos;envoi. Veuillez reessayer.
           </p>
         </div>
       )}
@@ -230,7 +230,7 @@ export function ContactForm() {
             </div>
 
             <div className="grid gap-3 sm:gap-4">
-              <ContactInfoItem icon={MapPin} label="Adresse" value="Kalaban Coura, Imm. Bore en face de l'hotel Wassulu" />
+              <ContactInfoItem icon={MapPin} label="Adresse" value="Kalaban Coura, Imm. Bore en face de l&apos;hotel Wassulu" />
               <ContactInfoItem icon={Phone} label="Telephone" value="+223 91 83 09 41" />
               <ContactInfoItem icon={Clock} label="Horaires" value="Lun - Ven : 9h00 - 17h00 | Sam - Dim : Ferme" />
             </div>

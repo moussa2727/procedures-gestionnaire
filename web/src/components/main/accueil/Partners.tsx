@@ -4,14 +4,13 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { MapPin, ExternalLink, CheckCircle, Building2 } from 'lucide-react';
+import { MapPin, CheckCircle, Building2 } from 'lucide-react';
 
 interface Partner {
   id: number;
   name: string;
   location: string;
   image: any;
-  link: string;
   alt: string;
 }
 
@@ -27,10 +26,7 @@ import Inted from '@/public/images/inted.webp';
 
 const PartnerCard = ({ partner, index }: { partner: Partner; index: number }) => {
   return (
-    <motion.a
-      href={partner.link}
-      target="_blank"
-      rel="noopener noreferrer"
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -44,11 +40,6 @@ const PartnerCard = ({ partner, index }: { partner: Partner; index: number }) =>
       {/* Badge vérifié */}
       <div className="absolute left-3 top-3">
         <CheckCircle className="h-4 w-4 text-emerald-500" strokeWidth={2} />
-      </div>
-
-      {/* Icône externe au hover */}
-      <div className="absolute right-3 top-3 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-        <ExternalLink className="h-4 w-4 text-sky-500" strokeWidth={1.8} />
       </div>
 
       {/* Logo */}
@@ -73,7 +64,7 @@ const PartnerCard = ({ partner, index }: { partner: Partner; index: number }) =>
         <MapPin className="h-3 w-3 text-slate-400" strokeWidth={1.8} />
         <p className="text-xs text-slate-400">{partner.location}</p>
       </div>
-    </motion.a>
+    </motion.div>
   );
 };
 
@@ -86,7 +77,6 @@ const Partners: React.FC = () => {
       name: 'Supemir',
       location: 'Casablanca, Maroc',
       image: Supemir,
-      link: 'https://www.supemir.com/',
       alt: 'Supemir - École supérieure à Casablanca, Maroc',
     },
     {
@@ -94,7 +84,6 @@ const Partners: React.FC = () => {
       name: "L'École Multimédia",
       location: 'Paris, France',
       image: Ecolemultimedia,
-      link: 'https://www.ecole-multimedia.com/',
       alt: "L'École Multimédia - Paris, France",
     },
     {
@@ -102,7 +91,6 @@ const Partners: React.FC = () => {
       name: 'International Institute Ford Ghana',
       location: 'Accra, Ghana',
       image: InternationalInstitute,
-      link: 'https://visionfordgh.com/',
       alt: 'International Institute Ford Ghana - Accra, Ghana',
     },
     {
@@ -110,7 +98,6 @@ const Partners: React.FC = () => {
       name: 'Université de Chongqing',
       location: 'Chongqing, Chine',
       image: UniversiteChongqing,
-      link: 'https://english.cqu.edu.cn/',
       alt: 'Université de Chongqing - Chongqing, Chine',
     },
     {
@@ -118,7 +105,6 @@ const Partners: React.FC = () => {
       name: 'HECF',
       location: 'Fès, Maroc',
       image: Hecf,
-      link: 'https://hecf.ac.ma/',
       alt: 'HECF - Haute École de Commerce et de Finance, Fès, Maroc',
     },
     {
@@ -126,7 +112,6 @@ const Partners: React.FC = () => {
       name: "SUP'MANAGEMENT",
       location: 'Fès, Maroc',
       image: SupManagement,
-      link: 'https://www.supmanagement.ma/',
       alt: "SUP'MANAGEMENT - Fès, Maroc",
     },
     {
@@ -134,7 +119,6 @@ const Partners: React.FC = () => {
       name: 'Univers France Succès',
       location: 'Sarcelles, France',
       image: FranceSucces,
-      link: 'https://universfrancesucces.com/',
       alt: 'Univers France Succès - Sarcelles, France',
     },
     {
@@ -142,7 +126,6 @@ const Partners: React.FC = () => {
       name: 'Inted Group',
       location: 'Paris, France',
       image: Inted,
-      link: 'https://www.intedgroup.com/',
       alt: 'Inted Group - Paris, France',
     },
   ];

@@ -19,4 +19,6 @@ export const authService = {
   resetPassword: async (p: ResetPasswordPayload) => (await apiClient.post<ApiMessageResponse>('/auth/reset-password', p)).data,
   changePassword: async (p: ChangePasswordPayload) => (await apiClient.post<ApiMessageResponse>('/auth/change-password', p)).data,
   googleLoginUrl: () => `${apiClient.defaults.baseURL}/auth/google`,
+  refresh: async () => (await apiClient.post<{ success: boolean }>('/auth/refresh')).data,
+  googleDisconnect: async () => (await apiClient.post<{ success: boolean }>('/auth/google/disconnect')).data,
 };

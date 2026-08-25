@@ -236,15 +236,20 @@ export function useUsersRealtime() {
       qc.invalidateQueries({ queryKey: userKeys.lists() });
     };
     const onInvalidateAll = () => qc.invalidateQueries({ queryKey: userKeys.all });
+    const onPresenceUpdated = (p: { userId: string; isOnline: boolean; socketCount?: number }) => {
+      setOnline(p.userId, p.isOnline);
+    };
     socket.on('status', onStatus);
     socket.on('userUpdated', onUpdated);
     socket.on('newReview', onInvalidateAll);
     socket.on('reviewResponse', onInvalidateAll);
+    socket.on('presence:updated', onPresenceUpdated);
     return () => {
       socket.off('status', onStatus);
       socket.off('userUpdated', onUpdated);
       socket.off('newReview', onInvalidateAll);
       socket.off('reviewResponse', onInvalidateAll);
+      socket.off('presence:updated', onPresenceUpdated);
     };
   }, [qc, setOnline]);
 }

@@ -89,4 +89,9 @@ export const userService = {
   },
   createReview: async (consultantId: string, p: CreateReviewPayload) => (await apiClient.post(`/users/consultant/${consultantId}/reviews`, p)).data,
   respondToReview: async (reviewId: string, p: RespondReviewPayload) => (await apiClient.post(`/users/reviews/${reviewId}/response`, p)).data,
+  getLoginHistory: async (userId: string, page = 1, limit = 20) => {
+    const res = await apiClient.get<{ items: Array<Record<string, unknown>>; total: number; page: number; limit: number; totalPages: number }>(`/users/${userId}/login-history`, { params: { page, limit } });
+    return res.data;
+  },
+  resetUserPassword: async (userId: string, newPassword: string) => (await apiClient.post<{ message: string }>(`/users/${userId}/reset-password`, { newPassword })).data,
 };

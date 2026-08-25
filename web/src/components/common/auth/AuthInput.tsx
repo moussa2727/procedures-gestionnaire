@@ -10,7 +10,7 @@ export interface AuthInputProps extends React.InputHTMLAttributes<HTMLInputEleme
   icon?: LucideIcon;
   error?: string;
   containerClassName?: string;
-  register?: UseFormRegister<any>;
+  register?: UseFormRegister<Record<string, unknown>>;
 }
 
 export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
@@ -30,10 +30,10 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(
           <input
             ref={ref}
             id={inputId}
-            className={`w-full ${Icon ? 'pl-9' : 'pl-3'} pr-3 py-2 bg-slate-50/50 hover:bg-white focus:bg-white border rounded-xl text-slate-900 text-xs sm:text-sm transition-all placeholder:text-slate-400 focus:outline-none ${
+            className={`w-full ${Icon ? 'pl-9' : 'pl-3'} pr-3 py-2 bg-slate-50 hover:bg-white focus:bg-white border rounded-xl text-slate-900 text-xs sm:text-sm transition-all placeholder:text-slate-400 focus:outline-none ${
               error
-                ? 'border-rose-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/10'
-                : 'border-slate-200 hover:border-slate-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/15'
+                ? 'border-rose-400 hover:border-rose-300 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/10'
+                : 'border-slate-200 hover:border-sky-300 focus:border-sky-500 focus:ring-0'
             } ${className || ''}`}
             aria-invalid={!!error}
             aria-describedby={error ? `${inputId}-error` : undefined}
